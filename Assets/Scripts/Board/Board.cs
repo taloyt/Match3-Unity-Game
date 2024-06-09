@@ -142,6 +142,24 @@ public class Board
 
     internal void FillGapsWithNewItems()
     {
+        // setup eNormalType count
+        Dictionary<NormalItem.eNormalType, int> cellsCount = new Dictionary<NormalItem.eNormalType, int>();
+        foreach (var t in (NormalItem.eNormalType[])Enum.GetValues(typeof(NormalItem.eNormalType))) {
+            cellsCount[t] = 0;
+        }
+        for (int x = 0; x < boardSizeX; x++)
+        {
+            for (int y = 0; y < boardSizeY; y++)
+            {
+                Cell cell = m_cells[x, y];
+                if (cell.IsEmpty) continue;
+                NormalItem item = cell.Item as NormalItem;
+                if (item != null) {
+                    NormalItem.eNormalType key = item.ItemType;
+                    cellsCount[key] += 1;
+                }
+            }
+        }
         for (int x = 0; x < boardSizeX; x++)
         {
             for (int y = 0; y < boardSizeY; y++)
@@ -151,7 +169,18 @@ public class Board
 
                 NormalItem item = new NormalItem(m_boardSkin);
 
-                item.SetType(Utils.GetRandomNormalType());
+                var neighbours = getNeighborsTypes(cell);
+                // sort cellsCount again because we update 1 type of cellsCount after fill
+                var sortedDict = from entry in cellsCount orderby entry.Value ascending select entry;
+                foreach (var entry in sortedDict) {
+                    if (!neighbours.Contains(entry.Key)) {
+                        var key = entry.Key;
+                        item.SetType(key);
+                        cellsCount[key] += 1;
+                        break;
+                    }
+                }
+
                 item.SetView();
                 item.SetViewRoot(m_root);
 
@@ -159,6 +188,17 @@ public class Board
                 cell.ApplyItemPosition(true);
             }
         }
+    }
+
+    private IEnumerable<NormalItem.eNormalType> getNeighborsTypes(Cell target) {
+        List<Cell> cells = new List<Cell>
+        {
+            target.NeighbourUp,
+            target.NeighbourLeft,
+            target.NeighbourBottom,
+            target.NeighbourRight
+        };
+        return from cell in cells where cell != null && cell.Item is NormalItem && !cell.IsEmpty select (cell.Item as NormalItem).ItemType;
     }
 
     internal void ExplodeAllItems()
