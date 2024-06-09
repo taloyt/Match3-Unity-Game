@@ -20,7 +20,7 @@ public class BonusItem : Item
         ItemType = type;
     }
 
-    protected override string GetPrefabName()
+    public override void SetView()
     {
         string prefabname = string.Empty;
         switch (ItemType)
@@ -37,8 +37,8 @@ public class BonusItem : Item
                 prefabname = Constants.PREFAB_BONUS_BOMB;
                 break;
         }
-
-        return prefabname;
+        GameObject prefab = Resources.Load<GameObject>(prefabname);
+        View = GameObject.Instantiate(prefab).transform;
     }
 
     internal override bool IsSameType(Item other)

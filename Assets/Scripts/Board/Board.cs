@@ -26,10 +26,12 @@ public class Board
     private int m_matchMin;
 
     private GameObject m_prefabBG;
+    private BoardSkin m_boardSkin;
 
-    public Board(Transform transform, GameSettings gameSettings, GameObject prefabBG)
+    public Board(Transform transform, GameSettings gameSettings, BoardSkin boardSkin, GameObject prefabBG)
     {
         m_prefabBG = prefabBG;
+        m_boardSkin = boardSkin;
         m_root = transform;
 
         m_matchMin = gameSettings.MatchesMin;
@@ -81,7 +83,7 @@ public class Board
             for (int y = 0; y < boardSizeY; y++)
             {
                 Cell cell = m_cells[x, y];
-                NormalItem item = new NormalItem();
+                NormalItem item = new NormalItem(m_boardSkin);
 
                 List<NormalItem.eNormalType> types = new List<NormalItem.eNormalType>();
                 if (cell.NeighbourBottom != null)
@@ -147,7 +149,7 @@ public class Board
                 Cell cell = m_cells[x, y];
                 if (!cell.IsEmpty) continue;
 
-                NormalItem item = new NormalItem();
+                NormalItem item = new NormalItem(m_boardSkin);
 
                 item.SetType(Utils.GetRandomNormalType());
                 item.SetView();

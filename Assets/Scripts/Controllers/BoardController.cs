@@ -32,7 +32,7 @@ public class BoardController : MonoBehaviour
 
     private bool m_gameOver;
 
-    public void StartGame(GameManager gameManager, GameSettings gameSettings)
+    public void StartGame(GameManager gameManager, GameSettings gameSettings, BoardSkin boardSkin)
     {
         m_gameManager = gameManager;
 
@@ -42,7 +42,7 @@ public class BoardController : MonoBehaviour
 
         m_cam = Camera.main;
 
-        m_board = new Board(this.transform, gameSettings, PrefabBackGround);
+        m_board = new Board(this.transform, gameSettings, boardSkin, PrefabBackGround);
 
         Fill();
     }

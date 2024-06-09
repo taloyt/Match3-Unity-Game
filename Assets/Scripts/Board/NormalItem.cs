@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NormalItem : Item
 {
+    public SpriteRenderer ViewRenderer { get; private set; }
     public enum eNormalType
     {
         TYPE_ONE,
@@ -17,40 +18,24 @@ public class NormalItem : Item
 
     public eNormalType ItemType;
 
+    public BoardSkin BoardSkin;
+
+    public NormalItem(BoardSkin boardSkin) {
+        BoardSkin = boardSkin;
+    }
+
     public void SetType(eNormalType type)
     {
         ItemType = type;
     }
 
-    protected override string GetPrefabName()
+    public override void SetView()
     {
-        string prefabname = string.Empty;
-        switch (ItemType)
-        {
-            case eNormalType.TYPE_ONE:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_ONE;
-                break;
-            case eNormalType.TYPE_TWO:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_TWO;
-                break;
-            case eNormalType.TYPE_THREE:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_THREE;
-                break;
-            case eNormalType.TYPE_FOUR:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_FOUR;
-                break;
-            case eNormalType.TYPE_FIVE:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_FIVE;
-                break;
-            case eNormalType.TYPE_SIX:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_SIX;
-                break;
-            case eNormalType.TYPE_SEVEN:
-                prefabname = Constants.PREFAB_NORMAL_TYPE_SEVEN;
-                break;
+        if (!View) {
+            View = GameObject.Instantiate(Resources.Load<GameObject>(Constants.PREFAB_NORMAL_TYPE_ONE)).transform;
+            ViewRenderer = View.GetComponent<SpriteRenderer>();
         }
-
-        return prefabname;
+        ViewRenderer.sprite = BoardSkin.textures[(int)ItemType];
     }
 
     internal override bool IsSameType(Item other)

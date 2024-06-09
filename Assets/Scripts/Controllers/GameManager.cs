@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -22,7 +23,6 @@ public class GameManager : MonoBehaviour
         PAUSE,
         GAME_OVER,
     }
-
     private eStateGame m_state;
     public eStateGame State
     {
@@ -37,6 +37,8 @@ public class GameManager : MonoBehaviour
 
 
     public GameSettings m_gameSettings;
+    public List<BoardSkin> m_boardSkins;
+    public int m_boardSkinIndex = 0;
     public GameObject PrefabBoardController;
 
     private BoardController m_boardController;
@@ -82,7 +84,7 @@ public class GameManager : MonoBehaviour
     {
         GameObject boardController = Instantiate(PrefabBoardController);
         m_boardController = boardController.GetComponent<BoardController>();
-        m_boardController.StartGame(this, m_gameSettings);
+        m_boardController.StartGame(this, m_gameSettings, m_boardSkins[m_boardSkinIndex]);
 
         if (mode == eLevelMode.MOVES)
         {
@@ -103,6 +105,10 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         StartCoroutine(WaitBoardController());
+    }
+
+    public void SetBoardSkin(Dropdown dropdown) {
+        m_boardSkinIndex = dropdown.value;
     }
 
     internal void ClearLevel()
