@@ -36,11 +36,12 @@ public class GameManager : MonoBehaviour
     }
 
 
-    private GameSettings m_gameSettings;
-
+    public GameSettings m_gameSettings;
+    public GameObject PrefabBoardController;
 
     private BoardController m_boardController;
 
+    [SerializeField]
     private UIMainManager m_uiMenu;
 
     private LevelCondition m_levelCondition;
@@ -48,10 +49,6 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         State = eStateGame.SETUP;
-
-        m_gameSettings = Resources.Load<GameSettings>(Constants.GAME_SETTINGS_PATH);
-
-        m_uiMenu = FindObjectOfType<UIMainManager>();
         m_uiMenu.Setup(this);
     }
 
@@ -83,7 +80,8 @@ public class GameManager : MonoBehaviour
 
     public void LoadLevel(eLevelMode mode)
     {
-        m_boardController = new GameObject("BoardController").AddComponent<BoardController>();
+        GameObject boardController = Instantiate(PrefabBoardController);
+        m_boardController = boardController.GetComponent<BoardController>();
         m_boardController.StartGame(this, m_gameSettings);
 
         if (mode == eLevelMode.MOVES)

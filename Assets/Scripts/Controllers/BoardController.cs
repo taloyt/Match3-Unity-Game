@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class BoardController : MonoBehaviour
 {
+    public GameObject PrefabBackGround;
     public event Action OnMoveEvent = delegate { };
 
     public bool IsBusy { get; private set; }
@@ -41,7 +42,7 @@ public class BoardController : MonoBehaviour
 
         m_cam = Camera.main;
 
-        m_board = new Board(this.transform, gameSettings);
+        m_board = new Board(this.transform, gameSettings, PrefabBackGround);
 
         Fill();
     }

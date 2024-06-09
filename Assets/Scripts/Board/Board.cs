@@ -25,8 +25,11 @@ public class Board
 
     private int m_matchMin;
 
-    public Board(Transform transform, GameSettings gameSettings)
+    private GameObject m_prefabBG;
+
+    public Board(Transform transform, GameSettings gameSettings, GameObject prefabBG)
     {
+        m_prefabBG = prefabBG;
         m_root = transform;
 
         m_matchMin = gameSettings.MatchesMin;
@@ -42,12 +45,11 @@ public class Board
     private void CreateBoard()
     {
         Vector3 origin = new Vector3(-boardSizeX * 0.5f + 0.5f, -boardSizeY * 0.5f + 0.5f, 0f);
-        GameObject prefabBG = Resources.Load<GameObject>(Constants.PREFAB_CELL_BACKGROUND);
         for (int x = 0; x < boardSizeX; x++)
         {
             for (int y = 0; y < boardSizeY; y++)
             {
-                GameObject go = GameObject.Instantiate(prefabBG);
+                GameObject go = GameObject.Instantiate(m_prefabBG);
                 go.transform.position = origin + new Vector3(x, y, 0f);
                 go.transform.SetParent(m_root);
 
