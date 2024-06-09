@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
         TIMER,
         MOVES
     }
+    eLevelMode currentLevelMode = eLevelMode.TIMER;
 
     public enum eStateGame
     {
@@ -82,6 +83,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadLevel(eLevelMode mode)
     {
+        currentLevelMode = mode;
         GameObject boardController = Instantiate(PrefabBoardController);
         m_boardController = boardController.GetComponent<BoardController>();
         m_boardController.StartGame(this, m_gameSettings, m_boardSkins[m_boardSkinIndex]);
@@ -121,14 +123,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RestartGame()
+    {
+        StartCoroutine(WaitRestartGame());
+    }
+
+    private WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+    private WaitForSeconds wait1s = new WaitForSeconds(1);
     private IEnumerator WaitBoardController()
     {
         while (m_boardController.IsBusy)
         {
-            yield return new WaitForEndOfFrame();
+            yield return waitForEndOfFrame;
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return wait1s;
 
         State = eStateGame.GAME_OVER;
 
@@ -139,5 +148,16 @@ public class GameManager : MonoBehaviour
             Destroy(m_levelCondition);
             m_levelCondition = null;
         }
+    }
+
+    private IEnumerator WaitRestartGame()
+    {
+        while (m_boardController.IsBusy)
+        {
+            yield return waitForEndOfFrame;
+        }
+
+        ClearLevel();
+        LoadLevel(currentLevelMode);
     }
 }
